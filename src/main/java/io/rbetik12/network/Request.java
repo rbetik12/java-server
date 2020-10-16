@@ -16,11 +16,11 @@ public class Request implements Serializable {
         cookies = new HashMap<>();
     }
 
-    public void AddCookie(String key, String value) {
+    public void addCookie(String key, String value) {
         cookies.put(key, value);
     }
 
-    public String GetCookie(String key) {
+    public String getCookie(String key) {
         return cookies.get(key);
     }
 
