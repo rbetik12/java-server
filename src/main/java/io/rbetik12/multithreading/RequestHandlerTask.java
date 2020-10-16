@@ -23,11 +23,16 @@ public class RequestHandlerTask extends RecursiveAction {
 
         try (ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(data));) {
             Request request = (Request) iStream.readObject();
+            executeRequest(request);
             System.out.println("Server got: " + request);
         } catch (IOException e) {
             System.out.println("Can't read serialized object: " + e);
         } catch (ClassNotFoundException e) {
             System.out.println("Can't found class: " + e);
         }
+    }
+
+    private void executeRequest(Request request) {
+        RequestExecutorManager.getManager().submit(new RequestExecutorTask<>(request));
     }
 }
