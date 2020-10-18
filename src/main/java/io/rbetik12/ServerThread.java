@@ -1,6 +1,7 @@
 package io.rbetik12;
 
-import io.rbetik12.multithreading.RequestHandlerTask;
+import io.rbetik12.multithreading.request.RequestHandlerTask;
+import io.rbetik12.network.UserAddress;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -23,6 +24,7 @@ public class ServerThread extends Thread {
         }
     }
 
+
     public void run() {
         running = true;
         DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
@@ -30,12 +32,13 @@ public class ServerThread extends Thread {
         while (running) {
             try {
                 socket.receive(incoming);
+                System.out.println("Received request from address: " + incoming.getAddress() + " " + incoming.getPort());
             } catch (IOException e) {
                 System.out.println("Cannot receive message from client: " + e);
                 continue;
             }
 
-            forkJoinPool.execute(new RequestHandlerTask(incoming));
+            forkJoinPool.execute(new RequestHandlerTask(incoming.getData(), new UserAddress(incoming.getAddress(), incoming.getPort(), socket)));
         }
     }
 }

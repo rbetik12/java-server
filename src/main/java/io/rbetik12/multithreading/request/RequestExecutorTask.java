@@ -1,26 +1,43 @@
-package io.rbetik12.multithreading;
+package io.rbetik12.multithreading.request;
 
 import io.rbetik12.db.DBConnection;
 import io.rbetik12.models.User;
+import io.rbetik12.multithreading.response.ResponseSenderManager;
+import io.rbetik12.multithreading.response.ResponseSenderTask;
 import io.rbetik12.network.Request;
+import io.rbetik12.network.UserAddress;
 
+import java.net.DatagramPacket;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class RequestExecutorTask<T> implements Callable<T> {
     private final Request request;
+    private final UserAddress address;
 
-    public RequestExecutorTask(Request request) {
+    public RequestExecutorTask(Request request, UserAddress address) {
         this.request = request;
+        this.address = address;
     }
 
     @Override
     public T call() throws Exception {
+        Map<String, String> cookie = new HashMap<>();
         switch (request.getCommandType()) {
             case Auth:
-                authenticate();
+                boolean res = authenticate();
+                if (res) {
+                    cookie.put("Auth", "yes");
+                    ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address));
+                }
+                else {
+                    cookie.put("Auth", "no");
+                    ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address));
+                }
                 break;
         }
         return null;

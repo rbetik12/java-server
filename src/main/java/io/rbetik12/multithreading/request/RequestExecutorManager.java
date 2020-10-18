@@ -1,4 +1,4 @@
-package io.rbetik12.multithreading;
+package io.rbetik12.multithreading.request;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

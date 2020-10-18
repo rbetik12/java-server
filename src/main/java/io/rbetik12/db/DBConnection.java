@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class DBConnection {
     private static DBConnection instance;
     private final String url = "jdbc:mysql://localhost:3306/prog?serverTimezone=UTC";
-    private final String user = "root";
-    private final String password = "";
+    private final String user = "vitaliy";
+    private final String password = "123456";
 
     private Connection connection;
 
