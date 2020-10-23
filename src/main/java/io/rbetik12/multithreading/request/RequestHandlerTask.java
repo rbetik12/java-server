@@ -15,6 +15,8 @@ public class RequestHandlerTask extends RecursiveAction {
 
     private final UserAddress userAddress;
     private final byte[] data;
+    private boolean isExecuted = false;
+    private final Object lock = new Object();
 
     public RequestHandlerTask(byte[] data, UserAddress userAddress) {
         this.userAddress = userAddress;
@@ -24,6 +26,10 @@ public class RequestHandlerTask extends RecursiveAction {
 
     @Override
     protected void compute() {
+        synchronized (lock) {
+            if (isExecuted) return;
+            isExecuted = true;
+        }
         try (ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(data));) {
             Request request = (Request) iStream.readObject();
             executeRequest(request);
