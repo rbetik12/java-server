@@ -1,5 +1,6 @@
 package io.rbetik12.multithreading.request;
 
+import io.rbetik12.models.User;
 import io.rbetik12.network.Request;
 import io.rbetik12.network.UserAddress;
 
@@ -18,6 +19,7 @@ public class RequestHandlerTask extends RecursiveAction {
     public RequestHandlerTask(byte[] data, UserAddress userAddress) {
         this.userAddress = userAddress;
         this.data = data;
+        this.exec();
     }
 
     @Override
@@ -33,6 +35,11 @@ public class RequestHandlerTask extends RecursiveAction {
     }
 
     private void executeRequest(Request request) {
-        RequestExecutorManager.getManager().submit(new RequestExecutorTask<>(request, userAddress));
+        try {
+            RequestExecutorManager.getManager().submit(new RequestExecutorTask<>(request, userAddress, (User) request.getBody()));
+        }
+        catch (ClassCastException e) {
+            RequestExecutorManager.getManager().submit(new RequestExecutorTask<>(request, userAddress, null));
+        }
     }
 }
