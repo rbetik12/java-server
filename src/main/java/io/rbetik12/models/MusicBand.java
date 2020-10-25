@@ -29,6 +29,16 @@ public class MusicBand implements Comparable, Serializable {
         this.author = user;
     }
 
+    public MusicBand(long id, String name, Coordinates coordinates, int numberOfParticipants, MusicGenre genre, Label label, User user) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.numberOfParticipants = numberOfParticipants;
+        this.genre = genre;
+        this.label = label;
+        this.author = user;
+    }
+
     public long getId() {
         return id;
     }

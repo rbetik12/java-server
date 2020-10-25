@@ -18,4 +18,6 @@ public interface MusicCollection {
     void minByCreationDate();
 
     void filterByNumberOfParticipants(int number);
+
+    MusicBand get(int index);
 }

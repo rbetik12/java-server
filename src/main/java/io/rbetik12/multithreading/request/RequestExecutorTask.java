@@ -49,7 +49,12 @@ public class RequestExecutorTask<T> implements Callable<T> {
                 }
                 break;
             case Add:
+                cookie.put("Auth", "yes");
+                cookie.put("UserId", String.valueOf(userId));
                 CollectionManager.getManager().getCollection().add((MusicBand) request.getBody(), new User(userId, "def", "def"));
+                System.out.println("Sending response");
+                ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
+                System.out.println("Sent response");
                 break;
         }
         return null;

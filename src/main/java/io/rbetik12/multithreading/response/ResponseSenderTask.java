@@ -15,15 +15,28 @@ import java.util.concurrent.Callable;
 public class ResponseSenderTask implements Callable {
     private final Map<String, String > cookies;
     private final UserAddress userAddress;
+    private final Object body;
 
     public ResponseSenderTask(Map<String, String> cookies, UserAddress userAddress) {
         this.cookies = cookies;
         this.userAddress = userAddress;
+        this.body = null;
+    }
+
+    public ResponseSenderTask(Map<String, String> cookies, UserAddress userAddress, Object body) {
+        this.cookies = cookies;
+        this.userAddress = userAddress;
+        this.body = body;
     }
 
     @Override
     public Object call() {
-        Response response = new Response("Auth");
+        Response response;
+        if (body == null)
+             response = new Response("Auth");
+        else
+            response = new Response(body);
+
 
         for (Map.Entry<String, String> entry: cookies.entrySet()) {
             response.addCookie(entry.getKey(), entry.getValue());

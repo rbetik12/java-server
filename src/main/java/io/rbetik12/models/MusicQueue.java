@@ -2,12 +2,12 @@ package io.rbetik12.models;
 
 import io.rbetik12.db.DBConnection;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
 import java.util.PriorityQueue;
 
-public class MusicQueue implements MusicCollection {
-    private final PriorityQueue<MusicBand> queue;
+public class MusicQueue implements MusicCollection, Serializable {
+    private PriorityQueue<MusicBand> queue;
 
     public MusicQueue() {
         queue = new PriorityQueue<>();
@@ -17,8 +17,8 @@ public class MusicQueue implements MusicCollection {
     public void add(MusicBand e, User user) {
         e.setCreationDate(ZonedDateTime.now());
         e.setAuthor(user);
-        System.out.println("Adding new band: " + e);
         DBConnection.getInstance().add(e);
+        updateQueue();
     }
 
     @Override
@@ -61,7 +61,17 @@ public class MusicQueue implements MusicCollection {
 
     }
 
-    public void updateQueue() {
+    @Override
+    public MusicBand get(int index) {
+        int i = 0;
+        for (MusicBand e: queue) {
+            if (i == index) return e;
+            i += 1;
+        }
+        return null;
+    }
 
+    public void updateQueue() {
+        queue = DBConnection.getInstance().getAllBands();
     }
 }

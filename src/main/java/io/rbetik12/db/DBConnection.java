@@ -1,13 +1,12 @@
 package io.rbetik12.db;
 
-import io.rbetik12.models.MusicBand;
-import io.rbetik12.models.User;
+import io.rbetik12.models.*;
 
 import java.sql.*;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.util.PriorityQueue;
 
 public class DBConnection {
     private static DBConnection instance;
@@ -44,6 +43,30 @@ public class DBConnection {
         } catch (SQLException exception) {
             System.out.println("Can't create add query: " + exception);
         }
+    }
+
+    public PriorityQueue<MusicBand> getAllBands() {
+        PriorityQueue<MusicBand> queue = new PriorityQueue<>();
+        try {
+            ResultSet rs = DBConnection.getInstance().getConnection().createStatement().executeQuery("select * from Band");
+            while (rs.next()) {
+                MusicBand e = new MusicBand(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        new Coordinates(rs.getDouble("x"), rs.getDouble("y")),
+                        rs.getInt("numberOfParticipants"),
+                        MusicGenre.BLUES,
+                        new Label(rs.getString("label")),
+                        new User(rs.getLong("author_id"), "", "")
+                );
+                e.setCreationDate(ZonedDateTime.of(rs.getDate("creationDate").toLocalDate(), LocalTime.now(), ZoneId.of("UTC+03:00")));
+                queue.add(e);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Can't create add query: " + e);
+        }
+        return queue;
     }
 
     public Connection getConnection() {
