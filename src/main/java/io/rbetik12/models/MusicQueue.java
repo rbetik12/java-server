@@ -4,6 +4,8 @@ import io.rbetik12.db.DBConnection;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class MusicQueue implements MusicCollection, Serializable {
@@ -11,6 +13,11 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     public MusicQueue() {
         queue = new PriorityQueue<>();
+    }
+
+    @Override
+    public List<MusicBand> toList() {
+        return new ArrayList<>(queue);
     }
 
     @Override

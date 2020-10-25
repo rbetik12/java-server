@@ -1,5 +1,7 @@
 package io.rbetik12.models;
 
+import java.util.List;
+
 public interface MusicCollection {
     void add(MusicBand e, User user);
 
@@ -20,4 +22,6 @@ public interface MusicCollection {
     void filterByNumberOfParticipants(int number);
 
     MusicBand get(int index);
+
+    List<MusicBand> toList();
 }
