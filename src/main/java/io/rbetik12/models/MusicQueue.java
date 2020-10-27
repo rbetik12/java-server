@@ -30,7 +30,8 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     @Override
     public void update(int id, MusicBand e) {
-
+        DBConnection.getInstance().update(e);
+        updateQueue();
     }
 
     @Override

@@ -79,6 +79,10 @@ public class MusicBand implements Comparable, Serializable {
         this.author = user;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "Id: " +

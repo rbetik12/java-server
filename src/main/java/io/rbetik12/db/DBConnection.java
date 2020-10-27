@@ -6,6 +6,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.util.Calendar;
 import java.util.PriorityQueue;
 
 public class DBConnection {
@@ -22,6 +23,10 @@ public class DBConnection {
         } catch (SQLException e) {
             System.out.println("Can't create connection: " + e);
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     public void add(MusicBand e) {
@@ -69,10 +74,6 @@ public class DBConnection {
         return queue;
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
     public long getUserId(User user) {
         try {
             ResultSet rs = DBConnection.getInstance().getConnection().createStatement().executeQuery("select id from User where name= " + user.getUsername());
@@ -83,6 +84,25 @@ public class DBConnection {
             System.out.println("Can't create 'get user id' request");
         }
         return 0;
+    }
+
+    public void update(MusicBand e)  {
+        try {
+            PreparedStatement ps = getConnection().prepareStatement("update Band set name = ?, x = ?, y = ?, creationDate = ?, numberOfParticipants = ?, label = ? where id = " + e.getId());
+            ps.setString(1, e.getName());
+            ps.setDouble(2, e.getCoordinates().getX());
+            ps.setDouble(3, e.getCoordinates().getY());
+            ZonedDateTime now = ZonedDateTime.now();
+            long offsetMillis = ZoneOffset.from(now).getTotalSeconds() * 1000;
+            long isoMillis = now.toInstant().toEpochMilli();
+            Date date = new Date(isoMillis + offsetMillis);
+            ps.setDate(4, date);
+            ps.setInt(5, e.getNumberOfParticipants());
+            ps.setString(6, e.getLabel().getName());
+            ps.execute();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public static DBConnection getInstance() {

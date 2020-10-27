@@ -2,6 +2,7 @@ package io.rbetik12.multithreading.request;
 
 import io.rbetik12.db.DBConnection;
 import io.rbetik12.models.MusicBand;
+import io.rbetik12.models.MusicCollection;
 import io.rbetik12.models.MusicQueue;
 import io.rbetik12.models.User;
 import io.rbetik12.multithreading.CollectionManager;
@@ -55,6 +56,12 @@ public class RequestExecutorTask<T> implements Callable<T> {
                 System.out.println("Sending response");
                 ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 System.out.println("Sent response");
+                break;
+            case UpdateElement:
+                cookie.put("Auth", "yes");
+                cookie.put("UserId", String.valueOf(userId));
+                CollectionManager.getManager().getCollection().update((int)((MusicBand)request.getBody()).getId(), (MusicBand) request.getBody());
+                ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 break;
         }
         return null;
