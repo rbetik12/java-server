@@ -42,7 +42,7 @@ public class RequestExecutorTask<T> implements Callable<T> {
                 if (res) {
                     cookie.put("Auth", "yes");
                     cookie.put("UserId", String.valueOf(userId));
-                    ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address));
+                    ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 } else {
                     cookie.put("Auth", "no");
                     ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address));

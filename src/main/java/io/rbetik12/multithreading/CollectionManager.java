@@ -14,7 +14,9 @@ public class CollectionManager {
     private final MusicCollection collection;
 
     private CollectionManager() {
-        collection = new MusicQueue();
+        MusicQueue musicQueue = new MusicQueue();
+        musicQueue.updateQueue();
+        collection = musicQueue;
     }
 
     public MusicCollection getCollection() {
