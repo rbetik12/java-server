@@ -47,7 +47,15 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     @Override
     public void addIfMin(MusicBand e) {
-
+        if (queue.peek() != null) {
+            if (queue.peek().compareTo(e) < 0) {
+                DBConnection.getInstance().add(e);
+            }
+        }
+        else {
+            DBConnection.getInstance().add(e);
+        }
+        updateQueue();
     }
 
     @Override

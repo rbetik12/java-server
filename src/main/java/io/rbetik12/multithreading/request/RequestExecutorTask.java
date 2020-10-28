@@ -60,7 +60,7 @@ public class RequestExecutorTask<T> implements Callable<T> {
             case UpdateElement:
                 cookie.put("Auth", "yes");
                 cookie.put("UserId", String.valueOf(userId));
-                CollectionManager.getManager().getCollection().update((int)((MusicBand)request.getBody()).getId(), (MusicBand) request.getBody());
+                CollectionManager.getManager().getCollection().update((int) ((MusicBand) request.getBody()).getId(), (MusicBand) request.getBody());
                 ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 break;
             case RemoveElement:
@@ -68,6 +68,14 @@ public class RequestExecutorTask<T> implements Callable<T> {
                 cookie.put("UserId", String.valueOf(userId));
                 long bandId = (long) request.getBody();
                 CollectionManager.getManager().getCollection().remove((int) bandId, (int) userId);
+                ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
+                break;
+            case AddIfMin:
+                cookie.put("Auth", "yes");
+                cookie.put("UserId", String.valueOf(userId));
+                MusicBand band = (MusicBand) request.getBody();
+                band.setAuthor(new User(userId, "def", "def"));
+                CollectionManager.getManager().getCollection().addIfMin(band);
                 ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 break;
         }
