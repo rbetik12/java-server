@@ -7,7 +7,7 @@ public interface MusicCollection {
 
     void update(int id, MusicBand e);
 
-    void remove(int id);
+    void remove(int id, int userId);
 
     void clear();
 

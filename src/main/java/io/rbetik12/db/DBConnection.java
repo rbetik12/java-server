@@ -105,6 +105,14 @@ public class DBConnection {
         }
     }
 
+    public void remove(int id, int userId) {
+        try {
+            getConnection().createStatement().executeUpdate("delete from Band where id = " + id + " and author_id = " + userId);
+        } catch (SQLException exception) {
+            System.out.println("Can't execute delete request: " + exception);
+        }
+    }
+
     public static DBConnection getInstance() {
         if (instance == null) {
             instance = new DBConnection();
