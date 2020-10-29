@@ -13,9 +13,9 @@ public interface MusicCollection {
 
     void addIfMin(MusicBand e);
 
-    void removeGreater(MusicBand e);
+    void removeGreater(MusicBand e, int userId);
 
-    void removeLower(MusicBand e);
+    void removeLower(MusicBand e, int userId);
 
     void minByCreationDate();
 

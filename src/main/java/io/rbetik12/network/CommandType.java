@@ -5,5 +5,7 @@ public enum CommandType {
     Auth,
     UpdateElement,
     RemoveElement,
-    AddIfMin
+    AddIfMin,
+    RemoveLower,
+    RemoveGreater
 }

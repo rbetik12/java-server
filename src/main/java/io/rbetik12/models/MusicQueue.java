@@ -13,6 +13,7 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     public MusicQueue() {
         queue = new PriorityQueue<>();
+        updateQueue();
     }
 
     @Override
@@ -59,13 +60,17 @@ public class MusicQueue implements MusicCollection, Serializable {
     }
 
     @Override
-    public void removeGreater(MusicBand e) {
-
+    public void removeGreater(MusicBand e, int userId) {
     }
 
     @Override
-    public void removeLower(MusicBand e) {
-
+    public void removeLower(MusicBand e, int userId) {
+        for (MusicBand el: queue) {
+            if (el.compareTo(e) < 0) {
+                DBConnection.getInstance().remove((int) el.getId(), userId);
+            }
+        }
+        updateQueue();
     }
 
     @Override
