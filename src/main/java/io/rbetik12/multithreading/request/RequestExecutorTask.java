@@ -86,6 +86,14 @@ public class RequestExecutorTask<T> implements Callable<T> {
                 CollectionManager.getManager().getCollection().removeLower(bandToRemoveLower, (int) userId);
                 ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
                 break;
+            case RemoveGreater:
+                cookie.put("Auth", "yes");
+                cookie.put("UserId", String.valueOf(userId));
+                MusicBand bandToRemoveGreater = (MusicBand) request.getBody();
+                bandToRemoveGreater.setAuthor(new User(userId, "def", "def"));
+                CollectionManager.getManager().getCollection().removeGreater(bandToRemoveGreater, (int) userId);
+                ResponseSenderManager.getManager().submit(new ResponseSenderTask(cookie, address, CollectionManager.getManager().getCollection()));
+                break;
 
         }
         return null;

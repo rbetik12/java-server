@@ -61,6 +61,12 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     @Override
     public void removeGreater(MusicBand e, int userId) {
+        for (MusicBand el: queue) {
+            if (el.compareTo(e) > 0) {
+                DBConnection.getInstance().remove((int) el.getId(), userId);
+            }
+        }
+        updateQueue();
     }
 
     @Override
