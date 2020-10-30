@@ -11,7 +11,11 @@ import io.rbetik12.multithreading.response.ResponseSenderTask;
 import io.rbetik12.network.Request;
 import io.rbetik12.network.UserAddress;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -120,7 +124,39 @@ public class RequestExecutorTask<T> implements Callable<T> {
         return false;
     }
 
-    private String hashPassword(String password) {
-        return password;
+    private String hashPassword(String password)  {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        ByteArrayInputStream fis = new ByteArrayInputStream(password.getBytes());
+
+        byte[] dataBytes = new byte[1024];
+
+        int nread = 0;
+        while (true) {
+            try {
+                if (!((nread = fis.read(dataBytes)) != -1)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            md.update(dataBytes, 0, nread);
+        };
+        byte[] mdbytes = md.digest();
+
+        //convert the byte to hex format method 1
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mdbytes.length; i++) {
+            sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        //convert the byte to hex format method 2
+        StringBuffer hexString = new StringBuffer();
+        for (int i=0;i<mdbytes.length;i++) {
+            hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
+        }
+        return hexString.toString();
     }
 }

@@ -115,12 +115,8 @@ public class MusicQueue implements MusicCollection, Serializable {
     }
 
     public void updateQueue() {
-        System.out.println("Locked here");
-        System.out.println(lock);
         lock.lock();
         queue = DBConnection.getInstance().getAllBands();
-        System.out.println("Waiting for unlock");
         lock.unlock();
-        System.out.println("Unlocked here");
     }
 }
