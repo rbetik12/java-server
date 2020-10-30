@@ -76,12 +76,12 @@ public class DBConnection {
 
     public long getUserId(User user) {
         try {
-            ResultSet rs = DBConnection.getInstance().getConnection().createStatement().executeQuery("select id from User where name= " + user.getUsername());
+            ResultSet rs = DBConnection.getInstance().getConnection().createStatement().executeQuery("select id from User where name= '" + user.getUsername() + "'");
             while (rs.next()) {
                 return rs.getLong("id");
             }
         } catch (SQLException e) {
-            System.out.println("Can't create 'get user id' request");
+            System.out.println("Can't create 'get user id' request: " + e);
         }
         return 0;
     }
