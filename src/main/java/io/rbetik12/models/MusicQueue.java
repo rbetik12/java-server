@@ -7,12 +7,15 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MusicQueue implements MusicCollection, Serializable {
     private PriorityQueue<MusicBand> queue;
+    private ReentrantLock lock;
 
     public MusicQueue() {
         queue = new PriorityQueue<>();
+        lock = new ReentrantLock();
         updateQueue();
     }
 
@@ -23,22 +26,28 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     @Override
     public void add(MusicBand e, User user) {
+        lock.lock();
         e.setCreationDate(ZonedDateTime.now());
         e.setAuthor(user);
         DBConnection.getInstance().add(e);
         updateQueue();
+        lock.unlock();
     }
 
     @Override
     public void update(int id, MusicBand e) {
+        lock.lock();
         DBConnection.getInstance().update(e);
         updateQueue();
+        lock.unlock();
     }
 
     @Override
     public void remove(int id, int userId) {
+        lock.lock();
         DBConnection.getInstance().remove(id, userId);
         updateQueue();
+        lock.unlock();
     }
 
     @Override
@@ -48,6 +57,7 @@ public class MusicQueue implements MusicCollection, Serializable {
 
     @Override
     public void addIfMin(MusicBand e) {
+        lock.lock();
         if (queue.peek() != null) {
             if (queue.peek().compareTo(e) < 0) {
                 DBConnection.getInstance().add(e);
@@ -57,26 +67,31 @@ public class MusicQueue implements MusicCollection, Serializable {
             DBConnection.getInstance().add(e);
         }
         updateQueue();
+        lock.unlock();
     }
 
     @Override
     public void removeGreater(MusicBand e, int userId) {
+        lock.lock();
         for (MusicBand el: queue) {
             if (el.compareTo(e) > 0) {
                 DBConnection.getInstance().remove((int) el.getId(), userId);
             }
         }
         updateQueue();
+        lock.unlock();
     }
 
     @Override
     public void removeLower(MusicBand e, int userId) {
+        lock.lock();
         for (MusicBand el: queue) {
             if (el.compareTo(e) < 0) {
                 DBConnection.getInstance().remove((int) el.getId(), userId);
             }
         }
         updateQueue();
+        lock.unlock();
     }
 
     @Override
@@ -100,6 +115,12 @@ public class MusicQueue implements MusicCollection, Serializable {
     }
 
     public void updateQueue() {
+        System.out.println("Locked here");
+        System.out.println(lock);
+        lock.lock();
         queue = DBConnection.getInstance().getAllBands();
+        System.out.println("Waiting for unlock");
+        lock.unlock();
+        System.out.println("Unlocked here");
     }
 }
