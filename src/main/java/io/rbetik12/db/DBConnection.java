@@ -31,8 +31,8 @@ public class DBConnection {
 
     public void add(MusicBand e) {
         try {
-            PreparedStatement ps = getConnection().prepareStatement("insert into Band (name, x, y, creationDate, numberOfParticipants, label, author_id) " +
-                    "values (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = getConnection().prepareStatement("insert into Band (name, x, y, creationDate, numberOfParticipants, label, author_id, genre) " +
+                    "values (?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps.setString(1, e.getName());
             ps.setDouble(2, e.getCoordinates().getX());
@@ -44,9 +44,24 @@ public class DBConnection {
             ps.setInt(5, e.getNumberOfParticipants());
             ps.setString(6, e.getLabel().getName());
             ps.setLong(7, e.getAuthor().getId());
+            ps.setString(8, e.getGenre().toString());
             ps.execute();
         } catch (SQLException exception) {
             System.out.println("Can't create add query: " + exception);
+        }
+    }
+
+    private MusicGenre stringToGenre(String genre){
+        switch (genre){
+            case "ROCK":
+                return MusicGenre.ROCK;
+            case "HIP_HOP":
+                return MusicGenre.HIP_HOP;
+            case "PSYCHEDELIC_CLOUD_RAP":
+                return MusicGenre.PSYCHEDELIC_CLOUD_RAP;
+            case "PUNK_ROCK":
+                return MusicGenre.PUNK_ROCK;
+            default:return MusicGenre.BLUES;
         }
     }
 
@@ -60,7 +75,7 @@ public class DBConnection {
                         rs.getString("name"),
                         new Coordinates(rs.getDouble("x"), rs.getDouble("y")),
                         rs.getInt("numberOfParticipants"),
-                        MusicGenre.BLUES,
+                        stringToGenre(rs.getString("genre")),
                         new Label(rs.getString("label")),
                         new User(rs.getLong("author_id"), "", "")
                 );
@@ -88,7 +103,7 @@ public class DBConnection {
 
     public void update(MusicBand e)  {
         try {
-            PreparedStatement ps = getConnection().prepareStatement("update Band set name = ?, x = ?, y = ?, creationDate = ?, numberOfParticipants = ?, label = ? where id = " + e.getId());
+            PreparedStatement ps = getConnection().prepareStatement("update Band set name = ?, x = ?, y = ?, creationDate = ?, numberOfParticipants = ?, label = ?, genre = ? where id = " + e.getId());
             ps.setString(1, e.getName());
             ps.setDouble(2, e.getCoordinates().getX());
             ps.setDouble(3, e.getCoordinates().getY());
@@ -99,6 +114,7 @@ public class DBConnection {
             ps.setDate(4, date);
             ps.setInt(5, e.getNumberOfParticipants());
             ps.setString(6, e.getLabel().getName());
+            ps.setString(7, e.getGenre().toString());
             ps.execute();
         } catch (SQLException exception) {
             exception.printStackTrace();
